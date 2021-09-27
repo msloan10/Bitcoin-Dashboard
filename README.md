@@ -19,5 +19,5 @@
 * **Sentiment.py** - Azure Cognitive Services Sentiment Analysis
 
 
-* **stockChart.py** - Bitcoin candle stick chart to monitor price from opening to closing 
+* **DashboardUI.py** - Dashboard UI using Dash 
 
