@@ -6,8 +6,6 @@ import time
 from Clean_Text import clean_tweet
 from nltk.corpus import stopwords
 
-
-
 class Listener(tweepy.StreamListener):
 
   def on_data(self, data):
