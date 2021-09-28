@@ -1,5 +1,5 @@
 # Bitcoin Dashboard
- A Bitcoin dashboard that incorpoartes sentiment analysis using Twitter data. 
+ A Bitcoin dashboard that incorpoartes sentiment analysis using Twitter data. The dashboard also displays the top news headlines, a candle stick graph for bitcoin pricing, and options to buy or sell Bitcoin. 
 
 ## File Descriptions:  
 
@@ -19,5 +19,5 @@
 * **Sentiment.py** - Azure Cognitive Services Sentiment Analysis
 
 
-* **stockChart.py** - Bitcoin candle stick chart to monitor price from opening to closing 
+* **DashboardUI.py** - Dashboard UI using Dash 
 
