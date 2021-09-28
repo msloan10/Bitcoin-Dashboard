@@ -74,7 +74,7 @@ class Social_Media_Text_Pipeline():
   def Load(self,data):
       attributes = ["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets", "Sentiment", "Positive Score", "Negative Score"]
       DRIVER = 'SQL Server'
-      SERVER_NAME = 'LAPTOP-5A0QRM9K'
+      SERVER_NAME = ''
       DATABASE_NAME = 'Social Media Research' 
     
       try: 
