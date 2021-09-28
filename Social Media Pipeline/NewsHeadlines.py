@@ -2,7 +2,6 @@ from GoogleNews import GoogleNews
 import datetime
 import pandas as pd
 
-#returns 
 class NewsHeadlines():
     def __init__(self, topic):
         result = []
