@@ -5,11 +5,16 @@ import random
 import string
 from textblob import TextBlob
 import TW_Listen
+import sys 
+import pypyodbc as odbc
 from Clean_Text import clean_tweet
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
 
 
 class Social_Media_Text_Pipeline():
-  #Authorization 
+  #Authorization
+  #TODO: MAKE KEYS ARGS  
   def __init__(self,social_platform,topics):
 
     self.social_platform = social_platform
@@ -24,7 +29,6 @@ class Social_Media_Text_Pipeline():
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
-
         self.auth = auth
         
         #FOR BATCH PROCESSING 
@@ -33,16 +37,13 @@ class Social_Media_Text_Pipeline():
       except:
         print("Unable to get authroization")
 
-      
  
-  def Extract(self, type):
-    if (type == "stream"):
+  def Extract(self, dataFlow, result_type, count):
+    if (dataFlow == "stream"):
         if(self.social_platform == 'Twitter'):
             twitter_stream = tweepy.Stream(auth = self.auth, listener = TW_Listen.Listener(), tweet_mode = "extended")
             twitter_stream.filter(track = self.topics, languages=["en"])
     else: 
-        count = 83
-        result_type = input("Result type (mixed, popular, recent):")
         data = list()
         if (self.social_platform == 'Twitter'):
             for topic in self.topics:
@@ -51,31 +52,31 @@ class Social_Media_Text_Pipeline():
                 for tweet in tweet_info:                  
                     text = clean_tweet(tweet.full_text)
                     data.append([tweet.user.id_str,str(tweet.id),str(tweet.created_at).split()[0],text,tweet.favorite_count,tweet.retweet_count])
-            
-            letters = string.digits
-            file_name = "Twitter_" +result_type+"_"+''.join(random.choice(letters) for i in range(6))+".csv"
-            self.Load(file = file_name , data = data)
 
-            
-            
-  #ONLY USED WHEN TYPE == BATCH 
-  #TODO: ADD COLUMNS FOR NLP [ATTRIBUTES: SENTIMENT, SCORE]
-  def Load(self,file, data):
-      if (self.social_platform == 'Twitter'):
-          with open(file, 'w',newline='') as csvfile: 
-            writer = csv.writer(csvfile)
-            writer.writerow(["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets"])
-            for row in data:
-                writer.writerow(row)
-          print("\nDone writing to %s..." % file)
-           
+            return data
+        
+  def Analyze_Data(self, key, endpoint):
+
+    def authenticate_Azure_client():
+        ta_credential = AzureKeyCredential(key)
+        text_analytics_client = TextAnalyticsClient(
+        endpoint=endpoint, 
+        credential=ta_credential)
+
+        return text_analytics_client
+
+    self.client = authenticate_client()
 
 
+  def Load(self,data):
+      columns = ["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets", "Sentiment", "Positive Score", "Negative Score"]
+      DRIVER = 'SQL Server'
+      SERVER_NAME = 'LAPTOP-5A0QRM9K'
+      DATABASE_NAME = 'Social Media Research'
 
-if __name__ == '__main__':
 
-  Twitter_pipeline = Social_Media_Text_Pipeline(social_platform='Twitter', topics = ["Bitcoin"])
-  #Twitter_pipeline.Extract(type = "stream")
-  Twitter_pipeline.Extract(type = "batch")
+      #edit this 
+      conn_string ="Driver = {{{DRIVER}};\nServer={SERVER_NAME};\nTrust_Coonnection = yes;"
+      print(conn_string)
 
- 
+      #con = odbc.connect()
