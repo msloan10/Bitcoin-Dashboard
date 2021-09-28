@@ -4,7 +4,7 @@
 ## File Descriptions:  
 
 
-* **Social Media Pipeline.py** - Data pipeline
+* **Social Media Pipeline.py** - Data pipeline; stores data in MS Server
 
 
 * **TW_Listen.py** - Stream data from Twitter
