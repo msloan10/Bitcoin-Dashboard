@@ -1,12 +1,7 @@
 import json
-import re
 import tweepy
-import nltk
 import time 
 from Clean_Text import clean_tweet
-from nltk.corpus import stopwords
-
-
 
 class Listener(tweepy.StreamListener):
 

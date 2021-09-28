@@ -29,6 +29,7 @@ class Social_Media_Text_Pipeline():
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
+
         self.auth = auth
         
         #FOR BATCH PROCESSING 
@@ -55,28 +56,53 @@ class Social_Media_Text_Pipeline():
 
             return data
         
-  def Analyze_Data(self, key, endpoint):
-
-    def authenticate_Azure_client():
+  def Analyze(self, key, endpoint):
+    #Connect with Azure
+    try: 
         ta_credential = AzureKeyCredential(key)
         text_analytics_client = TextAnalyticsClient(
         endpoint=endpoint, 
         credential=ta_credential)
+    except Exception as e:
+        print(e)
+        print("Task Failed")
+    else:
+        self.client = text_analytics_client
 
-        return text_analytics_client
-
-    self.client = authenticate_client()
 
 
   def Load(self,data):
-      columns = ["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets", "Sentiment", "Positive Score", "Negative Score"]
+      attributes = ["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets", "Sentiment", "Positive Score", "Negative Score"]
       DRIVER = 'SQL Server'
       SERVER_NAME = 'LAPTOP-5A0QRM9K'
-      DATABASE_NAME = 'Social Media Research'
+      DATABASE_NAME = 'Social Media Research' 
+    
+      try: 
+          con = odbc.connect(driver = '{SQL Server}', server = SERVER_NAME, database = DATABASE_NAME, trust_connection = 'yes')
+      except Exception as e: 
+          print(e)
+          print('Connection Failed')
+      else: 
+          cursor = con.cursor()
 
 
-      #edit this 
-      conn_string ="Driver = {{{DRIVER}};\nServer={SERVER_NAME};\nTrust_Coonnection = yes;"
-      print(conn_string)
+      table_name ='Tweets_%s' % ''.join(random.choice(string.digits) for i in range(5)) 
+      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE,TWText VARCHAR(280),Likes INT, Retweets INT,PRIMARY KEY(TweetID));" %table_name 
+      insert_statement = """insert into %s values (?,?,?,?,?,?)""" % table_name
 
-      #con = odbc.connect()
+
+      try: 
+        cursor.execute(create_table_statement)
+        con.commit()
+      except Exception as e: 
+        print(e)
+        print("creating table failed")
+        cursor.rollback()
+      else: 
+        for row in data: 
+            print(row)
+            cursor.execute(insert_statement, row)
+        print("inserted rows successfully!")
+        con.commit()
+        cursor.close()
+        con.close()

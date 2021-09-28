@@ -16,5 +16,5 @@ else:
     complete_data += Twitter_pipeline.Extract(dataFlow = "batch", result_type = 'recent', count = 41)
 
 
-Twitter_pipeline.Load(data = 4)
+Twitter_pipeline.Load(data = complete_data)
 

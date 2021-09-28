@@ -1,7 +1,5 @@
 import re
 
-#TODO: SEPERATE SENTENCES INTO AN ARRAY. DO SENTIMENT OF EACH SENTENCE THEN AVERAGE THE SCORE AND DETERMINE THE SENTIMENT 
-
 def clean_tweet(text):
     text = text.encode('ascii', 'ignore').decode('ascii')
     text = text.lower()

@@ -2,7 +2,6 @@
 import yfinance as yf
 import plotly.graph_objs as go
 import dash
-#import dash shit 
  
 class UI():
     def __init__(self):
