@@ -56,8 +56,7 @@ class Social_Media_Text_Pipeline():
 
             return data
         
-  def Analyze(self, key, endpoint):
-    #Connect with Azure
+  def Analyze(self, key, endpoint, row):
     try: 
         ta_credential = AzureKeyCredential(key)
         text_analytics_client = TextAnalyticsClient(
@@ -67,12 +66,24 @@ class Social_Media_Text_Pipeline():
         print(e)
         print("Task Failed")
     else:
-        self.client = text_analytics_client
+        client = text_analytics_client
+
+
+    sent_scores = [] 
+    tweet = [row[3]]
+    response = client.analyze_sentiment(documents = tweet)[0]
+    sent_scores = [response.confidence_scores.positive, response.confidence_scores.negative, response.confidence_scores.neutral]
+
+    if (sent_scores.index(max(sent_scores)) == 0):
+        row.append("Positive")
+    elif (sent_scores.index(max(sent_scores)) == 1):
+        row.append("Negative")
+    else: 
+        row.append("Neutral")
 
 
 
   def Load(self,data):
-      attributes = ["User ID","Tweet ID", "Date" ,"Text","Likes","Retweets", "Sentiment", "Positive Score", "Negative Score"]
       DRIVER = 'SQL Server'
       SERVER_NAME = ''
       DATABASE_NAME = 'Social Media Research' 
@@ -85,10 +96,10 @@ class Social_Media_Text_Pipeline():
       else: 
           cursor = con.cursor()
 
-
+      
       table_name ='Tweets_%s' % ''.join(random.choice(string.digits) for i in range(5)) 
-      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE,TWText VARCHAR(280),Likes INT, Retweets INT,PRIMARY KEY(TweetID));" %table_name 
-      insert_statement = """insert into %s values (?,?,?,?,?,?)""" % table_name
+      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE,TWText VARCHAR(280),Likes INT, Retweets INT,Overall_Sent varchar(10),PRIMARY KEY(TweetID));" %table_name 
+      insert_statement = """insert into %s values (?,?,?,?,?,?,?)""" % table_name
 
 
       try: 
@@ -100,9 +111,8 @@ class Social_Media_Text_Pipeline():
         cursor.rollback()
       else: 
         for row in data: 
-            print(row)
             cursor.execute(insert_statement, row)
-        print("inserted rows successfully!")
+        print("inserted rows successfully into %s!" % table_name)
         con.commit()
         cursor.close()
         con.close()
