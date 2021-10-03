@@ -1,8 +1,11 @@
 from Social_Media_Pipeline import Social_Media_Text_Pipeline
 
+#implement Social Media Pipeline; executed every 12 hours via Windows Task Manager
+
+num_rows = 82
 
 Twitter_pipeline = Social_Media_Text_Pipeline(social_platform='Twitter', topics = ["Bitcoin"])
-pop = Twitter_pipeline.Extract(dataFlow = "batch", result_type = 'popular', count = 82)
+pop = Twitter_pipeline.Extract(dataFlow = "batch", result_type = 'popular', count = num_rows)
 
 #SOME TIMES TWEEPY DOES NOT RETURN THE EXPECTED NUM OF ROWS FOR POP TWEETS 
 rowsLeft = 82 - len(pop)

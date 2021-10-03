@@ -30,6 +30,7 @@ class Social_Media_Text_Pipeline():
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
 
+
         self.auth = auth
         
         #FOR BATCH PROCESSING 
