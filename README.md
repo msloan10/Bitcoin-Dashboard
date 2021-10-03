@@ -4,10 +4,10 @@
 ## File Descriptions:  
 
 
-* **Social Media Pipeline.py** - Data pipeline; stores data in MS Server
+* **Social_Media_Pipeline.py** - ETL pipeline; stores data in MS Server
 
 
-* **TW_Listen.py** - Stream data from Twitter
+* **TW_Listen.py** - Stream real time data from Twitter
 
 
 * **Clean_Text.py** - Clean data from pipeline
@@ -16,7 +16,7 @@
 * **NewsHeadlines.py** - Get top news stories about Bitcoin 
 
 
-* **Sentiment.py** - Azure Cognitive Services Sentiment Analysis
+* **BiDailySentimentETL.py** - script that executes every 12 hours to allow for batch processing data from Social_Media_Pipeline.py
 
 
 * **DashboardUI.py** - Dashboard UI using Dash 
