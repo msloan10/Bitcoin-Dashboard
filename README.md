@@ -1,6 +1,6 @@
 # Social Bitcoin Dashboard
 
-##Overview
+## Overview
 
 A Social Bitcoin Dashboard that gauges public opinion, displays current prices, retrieves top headlines, and gives options to buy or sell Bitcoin. The Twitter data retrieved from the ETL pipeline is extracted via Tweepy API, transformed through cleaning processes, analyzed using Microsoft Azure Text Analytics services, and loaded into a MS Server database. The pipeline is also automated to retrieve batches of data in 12-hour intervals, and this process is done using Widows Task Manager. The results are displayed in a web-based dashboard using the Dash framework. 
 
