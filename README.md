@@ -10,7 +10,7 @@ The purpose of this Dashboard is to leverage public opinion to make better infor
 ## File Descriptions
 
 
-* **Social_Media_Pipeline.py** - ETL pipeline Class; stores data in MS Server
+* **Social_Media_Pipeline.py** - ETL pipeline class; stores data in MS Server
 
 
 * **TW_Listen.py** - Stream real time data from Twitter
@@ -22,7 +22,7 @@ The purpose of this Dashboard is to leverage public opinion to make better infor
 * **NewsHeadlines.py** - Get top news stories about Bitcoin 
 
 
-* **BiDailySentimentETL.py** - script that executes every 12 hours to allow for batch processing data
+* **BiDailySentimentETL.py** - Executes every 12 hours to allow for batch processing data
 
 
 * **DashboardUI.py** - Dashboard UI using Dash 
