@@ -28,22 +28,17 @@ def clean_tweet(text):
                 remove += data
                 data = []
         if ("@" in text_split[i] or "https:" in text_split[i]):
-            text_split[i] = text_split[i].replace(text_split[i], "")
+            text_split[i] = text_split[i].replace(text_split[i], " ")
 
 
     for index in remove:
-        text_split[index] = text_split[index].replace(text_split[index], "")
+        text_split[index] = text_split[index].replace(text_split[index], " ")
 
     cleaned = " ".join(text_split)
     pat = r'[^a-zA-z0-9.,!?/:;\"\'\s]' 
 
     return " ".join(re.sub(pat, '', cleaned).split())
 
-
-if __name__ == '__main__':
-    text = " @jamie #Hi my name #is #jamal #turner whats up man #hows it #going"
-
-    print(clean_tweet(text))
 
 
 
