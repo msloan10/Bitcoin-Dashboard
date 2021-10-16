@@ -1,21 +1,14 @@
 from GoogleNews import GoogleNews
 import datetime
-import pandas as pd
 
 class NewsHeadlines():
     def __init__(self, topic):
-        result = []
-        date = datetime.datetime.now()
-        date = date.strftime("%m/%d/%Y")
-        news = GoogleNews(start =date, end = date)
-        news.search(topic)
-        for i in range(5):
-            result.append([news.get_texts()[i], news.get_links()[i]])
-
-        self.result = result
+        self.topic = topic
 
     def get_headlines(self):
         return self.result
+    def analyze(self): 
+
 
 if __name__ == '__main__':
   x = NewsHeadlines(topic = "Bitcoin")

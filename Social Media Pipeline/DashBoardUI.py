@@ -4,13 +4,19 @@ import dash
 from dash import dcc
 from dash import html
 import pypyodbc as odbc
- 
+from GoogleNews import GoogleNews
+import datetime
 
 class DashBoardUI():
     def __init__(self):
+
+        #get headlines
+        headlines = self.getHeadlines()
+        print(headlines)
+
         self.app = dash.Dash(__name__)
-        self.app.title = "Bitcoin Dashboard"
-        self.app.layout = html.Div([html.H1(children = "Bitcoin Dash"),
+        self.app.title = "Bitcoin Social Dashboard"
+        self.app.layout = html.Div([html.H1(children = "Bitcoin Dashboard"),
             html.Div(dcc.Graph(id = 'stockChart', figure=self.candleStickFig())),
             html.Div(dcc.Graph(id = 'sentPieChart', figure=self.pieChartFig()))
             ])
@@ -35,7 +41,7 @@ class DashBoardUI():
 
 
 
-    def pieChartFig(self):
+    def sentTimeSeries(self):
 
         DRIVER = 'SQL Server'
         SERVER_NAME = ''
@@ -73,11 +79,21 @@ class DashBoardUI():
         labels  = [row[0] for row in sent_data]
         percents = [row[1] for row in sent_data]
 
-        trace = go.Pie(labels = labels, values = percents)
-        pieChartFig = go.Figure(data = [trace])
-        pieChartFig.update_layout(title = "Bitcoin Public Sentiment")
+        trace = go.line()
+        lineChartFig = go.Figure(data = [trace])
+        lineChartFig.update_layout(title = "Bitcoin Public Sentiment")
 
         return pieChartFig
+
+    def getHeadlines(self, topic = "Bitcoin"):
+        result = []
+        date = datetime.datetime.now()
+        date = date.strftime("%m/%d/%Y")
+        news = GoogleNews(start =date, end = date)
+        news.search(topic)
+        for i in range(5):
+            result.append([news.get_texts()[i], news.get_links()[i]])
+        return result
 
 
 

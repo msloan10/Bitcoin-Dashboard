@@ -18,8 +18,8 @@ class Listener(tweepy.StreamListener):
         else: 
             tw_tweet = raw_data['text']
 
-        clean_data = clean_tweet(text = tw_tweet)
-        print(clean_data, "\n")
+        print(tw_tweet)
+        sleep(5)
 
   def on_error(self, status):
     print(status)
