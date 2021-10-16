@@ -16,14 +16,17 @@ The purpose of this Dashboard is to leverage public opinion to make better infor
 * **TW_Listen.py** - Stream real time data from Twitter
 
 
-* **Clean_Text.py** - Clean data from pipeline
+* **Clean_Text.py** - Clean data from Social_Media_pipeline ETL
 
 
 * **NewsHeadlines.py** - Get top news stories about Bitcoin 
 
 
-* **BiDailySentimentETL.py** - Executes every 12 hours to allow for batch processing data
+* **AutomatedETLAnalysis.py** - Executes every 15 minutes to allow for batch processing data
 
 
 * **DashboardUI.py** - Dashboard UI using Dash 
+
+
+* **SentimentAnalysis.py** - Natrual Language Processing pipeline 
 
