@@ -1,4 +1,4 @@
-# Bitcoin Sentiment Analysis ETL
+# Bitcoin Social Media Sentiment Analysis ETL
 
 ## Overview
 
