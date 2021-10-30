@@ -23,7 +23,7 @@ NEXT STEP: Visualize data in Power BI
 * **AutomatedETLAnalysis.py** - Automatic ETL and sentiment analysis processing; executes every 15 minutes
 
 
-* **Output Batch** - Table output for ETL and Analysis 
+* **Sample Batch** - Table output for ETL and Analysis 
 
 
 * **Clean_Text.py** - Clean raw text from Social Media Pipeline (removes lists of hashtags, special characters, emojis)
