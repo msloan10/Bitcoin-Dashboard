@@ -8,9 +8,7 @@ from Clean_Text import clean_tweet
 
 
 
-class Social_Media_Text_Pipeline():
-  #Authorization
-  #TODO: MAKE KEYS ARGS  
+class Social_Media_Text_Pipeline(): 
   def __init__(self,social_platform,topics):
 
     self.social_platform = social_platform
@@ -24,7 +22,9 @@ class Social_Media_Text_Pipeline():
         access_token_secret = input("Enter Access Token Secret:")
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
+        auth.set_access_token(access_token, access_token_secret)      
+
+
         self.auth = auth
         
         #FOR BATCH PROCESSING 
@@ -48,10 +48,9 @@ class Social_Media_Text_Pipeline():
                 for tweet in tweet_info:                  
                     text = clean_tweet(tweet.full_text)
                     if (topic in text):
-                        data.append([tweet.user.id_str,str(tweet.id),str(tweet.created_at).split()[0],str(tweet.created_at).split()[1],text,tweet.favorite_count,tweet.retweet_count])
+                        data.append([tweet.user.id_str,str(tweet.id),str(tweet.created_at).split()[0],str(tweet.created_at).split()[1],text,tweet.favorite_count,tweet.retweet_count, result_type])
             return data
         
-
   def Load(self,data):
       DRIVER = 'SQL Server'
       SERVER_NAME = ''
@@ -67,8 +66,8 @@ class Social_Media_Text_Pipeline():
 
       
       self.table_name ='Tweets_%s' % ''.join(random.choice(string.digits) for i in range(5)) 
-      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE, TweetTime TIME,TWText VARCHAR(300),Likes INT, Retweets INT,PRIMARY KEY(TweetID));" %self.table_name 
-      insert_statement = """insert into %s values (?,?,?,?,?,?,?)""" % self.table_name
+      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE, TweetTime TIME,TWText VARCHAR(300),Likes INT, Retweets INT, ResultType VARCHAR(10),NegScore DECIMAL(5,4),NeuScore DECIMAL(5,4),PosScore DECIMAL(5,4), OverallSent VARCHAR(10) ,PRIMARY KEY(TweetID));" %self.table_name 
+      insert_statement = """insert into %s values (?,?,?,?,?,?,?,?,?,?,?,?)""" % self.table_name
 
 
       try: 

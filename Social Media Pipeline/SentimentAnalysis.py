@@ -1,9 +1,10 @@
 from nltk.tokenize import word_tokenize,sent_tokenize
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
-from textblob import TextBlob
+from nltk.sentiment import SentimentIntensityAnalyzer
 import pypyodbc as odbc
 import pandas as pd
+import numpy as np
 import nltk
 import string
 import re
@@ -11,74 +12,54 @@ import re
 
 class SentimentAnalysis():
     
-    def __init__(self, From, Till):
+    def __init__(self, text):
+        self.text = text
+        self.processed = self.pre_process(self.text)
 
-        self.From = re.sub(r'[^\w\s]','',From)
-        self.Till = re.sub(r'[^\w\s]','',Till)
+    def pre_process(self, text) -> list():
+        sen_tok = []
 
-        DRIVER = 'SQL Server'
-        SERVER_NAME = ''
-        DATABASE_NAME = 'Social Media Research' 
+        #tokenize by sentence
+        for i in range(len(text)):
+            sen_tok.append(sent_tokenize(text[i][0]))
 
-        table_names_query = """SELECT name
-                            FROM sys.tables
-                            WHERE create_date >= '{0}' AND create_date < '{1}' """
+        word_tok = []
+        sen_words = []
 
+        #tokenize by word in sentence
+        for i in range(len(sen_tok)):
+            sen_words = []
+            for j in range(len(sen_tok[i])):
+                sen_words.append(word_tokenize(sen_tok[i][j]))
+            word_tok.append(sen_words)
+        
+        # remove punctuation
+        def remove_punc(word_tok) -> list():
+            tweets = []
+            sen = []
+            translator = str.maketrans('', '', string.punctuation)
+            for tweet in word_tok:
+                sen = []
+                for sentence in tweet:
+                    no_punc = ' '.join(sentence).translate(translator)
+                    no_punc = no_punc.split(' ')
+                    for word in no_punc:
+                        if ('' in no_punc):
+                            no_punc.remove('')
+                    if (no_punc == []):
+                        continue
+                    else:
+                        sen.append(no_punc)
+ 
+                tweets.append(sen)
+                
+            return tweets
+                    
 
-        select_query  = """ Select *
-                            from {0}"""
+        no_punc = remove_punc(word_tok)
 
-
-        try: 
-            con = odbc.connect(driver = DRIVER, server = SERVER_NAME, database = DATABASE_NAME, trust_connection = 'yes')
-        except Exception as e: 
-            print(e)
-            print("Connection Failed")
-        else:
-            cursor = con.cursor()
-            cursor.execute(table_names_query.format(self.From, self.Till))
-            tableNames = [row for row in cursor.fetchall()]
-
-
-            if (len(tableNames) == 0): 
-                print("ERROR: No tables are avaliable for this interval")
-                return
-            else:
-                data = pd.DataFrame()
-                for table in tableNames:
-                    df = pd.DataFrame(pd.read_sql_query(select_query.format(table[0]),con))
-                    data = data.append(df)
-
-                cursor.close()
-                con.close()
-
-                data = self.pre_process(data)
-                #data = self.analyze(data)
-                self.data = data
-
-
-
-    def pre_process(self, data):
-
-        def remove_punc(data):
-            new_data  = data 
-            for sentence in new_data: 
-                for word in sentence: 
-                    if (word in string.punctuation):
-                        sentence.remove(word)
-            return new_data
-
-        def pos_tag_no_stopwords(data):
-            new_data = []
-            for sentence in data:
-                sen = nltk.pos_tag(sentence)
-                for word in sen:
-                    if (word[0] in stopwords.words('english')):
-                        sen.remove(word)
-                new_data.append(sen)
-            return new_data
-
-        def word_net_tags(data):
+        #remove stop words/ POS tagging
+        def pos_tag_no_stop_words(tweets) -> list():
 
             def get_wordnet_pos(tag):
                 if tag.startswith('J'):
@@ -92,48 +73,60 @@ class SentimentAnalysis():
                 else:
                     return wordnet.NOUN
 
-            new_data = []
-            for sentence in data: 
-                sen = []
-                for word in sentence:
-                    sen.append((word[0], get_wordnet_pos(word[1])))
-                new_data.append(sen)
-            return new_data
+            tagged = []
+            
+            for tweet in tweets:
+                record = []
+                for sentence in tweet:
+                    tw = []
+                    sen = nltk.pos_tag(sentence)
+                    for word in sen:
+                        if (word[0] in stopwords.words('english')):
+                            continue
+                        else:
+                            tw.append((word[0], get_wordnet_pos(word[1])))
+                    record.append(tw)
 
-        def get_Lemma(data):
+                tagged.append(record)
+            return tagged
+
+        pre_lemma = pos_tag_no_stop_words(no_punc)
+
+        #lemma
+        def lemmatize(data) -> list():
             wnl = WordNetLemmatizer()
-            new_data = []
-            for sentence in data: 
-                sen = []
-                for word in sentence: 
-                    sen.append(wnl.lemmatize(word[0], word[1]))
-                new_data.append(sen)
-            return new_data
+            lemmatized = []
+            for tweet in data:
+                tw = []
+                for sentence in tweet:
+                    sen = []
+                    for word in sentence:
+                        sen.append(wnl.lemmatize(word[0], word[1]))
+                    tw.append(sen)
+                lemmatized.append(tw)
+            return lemmatized
+
+        return lemmatize(pre_lemma)
 
 
+    def analyze(self) -> list():
+        analysis = []
+        for tweet in self.processed:
+            sent = []
+            for sentence in tweet:
+                polarity= SentimentIntensityAnalyzer().polarity_scores(" ".join(sentence))
+                sent.append(np.array([polarity['neg'], polarity['neu'], polarity['pos']]))
+            sent = np.sum(sent, axis=0)/len(tweet)
+            max_value= max(sent)
+            sent = sent.tolist()
+            if (sent.index(max_value) == 0):
+                sent.append('negative')
+            elif(sent.index(max_value) == 1):
+                sent.append('neutral')
+            else:
+                sent.append('positive')
 
-        data = data.astype({'tweetid': 'int64'})
-        data = data.astype({'userid': 'int64'})
-        data = data.drop_duplicates(subset = 'tweetid', keep='last')
+            analysis.append(sent)
 
-        data['token_sent'] = data['twtext'].apply(sent_tokenize)
-        data['tokenized_sent_by_word'] = data['token_sent'].apply(lambda x: [word_tokenize(word) for word in x])
-        data['no_punc'] = data['tokenized_sent_by_word'].apply(remove_punc)
-        data['pos_tags_no_stopwords'] = data['no_punc'].apply(pos_tag_no_stopwords)
-        data['wordnet_pos'] = data['pos_tags_no_stopwords'].apply(word_net_tags)
-        data['lemmatized'] = data['wordnet_pos'].apply(get_Lemma)
+        return analysis
 
-        return data
-
-
-    def analysis(self):
-
-        return
-    def get_table(self, filename):
-        return self.data.to_csv(file_name, encoding='utf-8', index=False)
-
-
-if __name__ == '__main__':
-    x = SentimentAnalysis(From = '2021-10-18', Till = '2021-10-20')
-    x.analysis()
-    #x.get_table(filename = "TESTTING")
