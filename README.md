@@ -3,10 +3,10 @@
 ## Overview
 
 
-The impact social media is having on the world in undeniable. Millions of users login to engage in online discussions and communities everyday. This results in an overwhelming amount of data that can be used to in numerous ways. One way we can use this data is by conducting sentiment analysis over a specified topic. By conducting sentiment analysis, we are able to detect the feelings an audience or market may have over a certain topic. This can be useful when investing in financial assets/ stocks. If we are able to detect how society feels about a certain asset, it can help indicate the type of market the stock is in (bearish or bullish) and lead to better decision making. 
+The impact social media is having on the world in undeniable. Millions of users login to engage in online discussions and communities everyday. This results in an overwhelming amount of data that can be used to in numerous ways. One way we can use this data is by conducting sentiment analysis over a specified topic. By conducting sentiment analysis, we are able to detect the feelings an audience or market may have over a certain topic. This can be extremely beneficial when investing in financial assets/ stocks. If we are able to detect how the market feels about a certain asset, it can help indicate the condition of the market (bear or bull) and lead to better decision making. 
 
 
-The Bitcoin Sentiment Analysis ETL in this repository extracts, transforms, analyzes, and loads data from Twitter into a MS SQL Server database. The analysis portion of the data includes individual scores for positive, negative, and neutral polarity as well as overall sentiment. Other attributes include tweet id, user id, text, retweets, likes, result type, and time. 
+The Bitcoin Sentiment Analysis ETL in this repository extracts, transforms, analyzes, and loads data from Twitter into a MS SQL Server database. The analysis portion includes individual scores for positive, negative, and neutral polarity as well as overall sentiment. Other attributes include tweet id, user id, text, retweets, likes, result type, and time. 
 
 NEXT STEP: Visualize data in Power BI  
 
