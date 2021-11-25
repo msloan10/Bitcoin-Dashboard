@@ -8,7 +8,7 @@ The impact social media is having on the world in undeniable. Millions of users 
 
 The Bitcoin Sentiment Analysis ETL in this repository extracts, transforms, analyzes, and loads data from Twitter into a MS SQL Server database. The analysis portion includes individual scores for positive, negative, and neutral polarity as well as overall sentiment. Other attributes include tweet id, user id, text, retweets, likes, result type, and time. 
 
-NEXT STEP: Visualize data in Power BI  
+NEXT STEP: Visualize findings in Power BI  
 
 
 ## File Descriptions
@@ -17,10 +17,10 @@ NEXT STEP: Visualize data in Power BI
 * **Social_Media_Pipeline.py** - ETL Pipeline to retrieve social media data
 
 
-* **SentimentAnalysis.py** - NLP pre-processing and sentiment analysis pipeline
+* **SentimentAnalysis.py** - NLP pre-processing and sentiment analysis pipeline; MFI Score 
 
 
-* **AutomatedETLAnalysis.py** - Automatic ETL and sentiment analysis processing; executes every 15 minutes
+* **ETLAnalysis_BTC.py** - Automatic ETL and sentiment analysis processing; executes every 15 minutes
 
 
 * **Sample Batch** - Table output for ETL and Analysis 
@@ -29,7 +29,7 @@ NEXT STEP: Visualize data in Power BI
 * **Clean_Text.py** - Clean raw text from Social Media Pipeline (removes lists of hashtags, special characters, emojis)
 
 
-* **TW_Listen.py** - Stream real time data from Twitter 
+* **WordCount.py** - Counts number of occurrences of top alt coins per tweet 
 
 
 
