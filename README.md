@@ -17,7 +17,7 @@ NEXT STEP: Visualize findings in Power BI
 * **Social_Media_Pipeline.py** - ETL Pipeline to retrieve social media data
 
 
-* **SentimentAnalysis.py** - NLP pre-processing and sentiment analysis pipeline; MFI Score 
+* **SentimentAnalysis.py** - NLP pre-processing and sentiment analysis pipeline; Returns a Market Forecast Indicator (MFI) Score that indicates whether a tweet is implying that the current market is Bearish, Bullish, or Stable (neither bear or bull) 
 
 
 * **ETLAnalysis_BTC.py** - Automatic ETL and sentiment analysis processing; executes every 15 minutes
