@@ -7,9 +7,7 @@ The impact social media is having on the world in undeniable. Millions of users 
 
 
 The Bitcoin Sentiment Analysis ETL in this repository extracts, transforms, analyzes, and loads data from Twitter into a MS SQL Server database. The analysis portion includes individual scores for positive, negative, and neutral polarity as well as overall sentiment. Other attributes include tweet id, user id, text, retweets, likes, result type, and time. In addition to this, I constructed my own score known as the Market Forecast Indicator (MFI). The MFI indicates whether a tweet is implying that the current market is Bearish, Bullish, or Stable (neither bear or bull).  
-
-NEXT STEP: Visualize findings in Power BI  
-
+ 
 
 ## File Descriptions
 
