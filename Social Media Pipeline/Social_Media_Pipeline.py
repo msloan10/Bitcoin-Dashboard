@@ -1,8 +1,7 @@
 import datetime
 import tweepy
 import random
-import string
-import TW_Listen 
+import string 
 import pypyodbc as odbc
 from Clean_Text import clean_tweet
 
@@ -22,42 +21,39 @@ class Social_Media_Text_Pipeline():
         access_token_secret = input("Enter Access Token Secret:")
 
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)      
-
+        auth.set_access_token(access_token, access_token_secret)
 
         self.auth = auth
         
-        #FOR BATCH PROCESSING 
         self.api = tweepy.API(self.auth)
 
       except:
         print("Unable to get authroization")
 
  
-  def Extract(self, dataFlow, result_type, count) -> list():
-    if (dataFlow == "stream"):
-        if(self.social_platform == 'Twitter'):
-            twitter_stream = tweepy.Stream(auth = self.auth, listener = TW_Listen.Listener(), tweet_mode = "extended")
-            twitter_stream.filter(track = self.topics, languages=["en"])
-    else: 
-        data = list()
-        if (self.social_platform == 'Twitter'):
-            for topic in self.topics:
-                tweet_info = tweepy.Cursor(self.api.search,q=topic+ " -filter:retweets",lang="en",result_type = result_type,since=str(datetime.datetime.now()).split(' ')[0], tweet_mode = "extended").items(count)
+  def Extract(self, result_type, count) -> list():
 
-                for tweet in tweet_info:                  
-                    text = clean_tweet(tweet.full_text)
-                    if (topic in text):
-                        data.append([tweet.user.id_str,str(tweet.id),str(tweet.created_at).split()[0],str(tweet.created_at).split()[1],text,tweet.favorite_count,tweet.retweet_count, result_type])
-            return data
+    if (self.social_platform == 'Twitter'):
+        data = list()
+        for topic in self.topics:
+            curr_date = str(datetime.datetime.now()).split(" ")[0]
+            tweet_info = tweepy.Cursor(self.api.search,q=topic+ " -filter:retweets",lang="en",result_type = result_type,since= curr_date, tweet_mode = "extended").items(count)
+                
+
+            for tweet in tweet_info: 
+                clean_text = clean_tweet(tweet.full_text)
+                row = [tweet.user.id_str,str(tweet.id),str(tweet.created_at).split()[0],str(tweet.created_at).split()[1],tweet.full_text,clean_text,tweet.favorite_count,tweet.retweet_count, result_type,topic]
+                  
+                data.append(row)
+        return data
         
   def Load(self,data):
       DRIVER = 'SQL Server'
       SERVER_NAME = ''
-      DATABASE_NAME = 'Social Media Research' 
-    
+      DB_NAME = 'Crypto SMR'
+
       try: 
-          con = odbc.connect(driver = '{SQL Server}', server = SERVER_NAME, database = DATABASE_NAME, trust_connection = 'yes')
+          con = odbc.connect(driver = '{SQL Server}', server = SERVER_NAME, database = DB_NAME, trust_connection = 'yes')
       except Exception as e: 
           print(e)
           print('Connection Failed')
@@ -65,9 +61,9 @@ class Social_Media_Text_Pipeline():
           cursor = con.cursor()
 
       
-      self.table_name ='Tweets_%s' % ''.join(random.choice(string.digits) for i in range(5)) 
-      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE, TweetTime TIME,TWText VARCHAR(300),Likes INT, Retweets INT, ResultType VARCHAR(10),NegScore DECIMAL(5,4),NeuScore DECIMAL(5,4),PosScore DECIMAL(5,4), OverallSent VARCHAR(10) ,PRIMARY KEY(TweetID));" %self.table_name 
-      insert_statement = """insert into %s values (?,?,?,?,?,?,?,?,?,?,?,?)""" % self.table_name
+      self.table_name ='Tweets_%s' % ''.join(random.choice(string.digits) for i in range(5))
+      create_table_statement = "CREATE TABLE %s(UserID varchar(30) NOT NULL,TweetID varchar(30),TweetDate DATE, TweetTime TIME,Raw_Tweet VARCHAR(300),Clean_Tweet VARCHAR(300),Likes INT, Retweets INT, ResultType VARCHAR(10),Topic VARCHAR(20),NegScore DECIMAL(5,4),NeuScore DECIMAL(5,4),PosScore DECIMAL(5,4), OverallSent VARCHAR(10),MFI VARCHAR(9),MFI_Score INT,ETH_Count INT,SOL_Count INT,BNB_Count INT,ADA_Count INT,AVAX_Count INT,DOGE_Count INT,PRIMARY KEY(TweetID));" %self.table_name 
+      insert_statement = """insert into %s values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""" % self.table_name
 
 
       try: 

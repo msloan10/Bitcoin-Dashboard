@@ -2,15 +2,13 @@ from nltk.tokenize import word_tokenize,sent_tokenize
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.sentiment import SentimentIntensityAnalyzer
-import pypyodbc as odbc
-import pandas as pd
 import numpy as np
 import nltk
 import string
 import re
 
 
-class SentimentAnalysis():
+class SentimentAnalysis_MFI():
     
     def __init__(self, text):
         self.text = text
@@ -105,8 +103,43 @@ class SentimentAnalysis():
                     tw.append(sen)
                 lemmatized.append(tw)
             return lemmatized
-
         return lemmatize(pre_lemma)
+
+
+    def Market_Forecast_Indicator(self) -> list():
+        scores = []
+        bear_words = ["sell", "selling", "low", "drop", "dump", "dumping", "dropping", "bear", "bearish",
+                      "dip", "dipping", "decrease", "decreasing", "red", "loss", "down", "downside"]
+
+        bull_words = ["buy", "buying", "bull", "bullish", "high", "ath", "moon",
+                      "hold", "green", "pump", "pumping", "increase", "increasing", "burning","burn","gain", "up", "upside"]
+
+       
+        bear_count = 0
+        bull_count = 0
+        
+        for tweet in self.processed:
+            tweet_score = 0
+            bull_count = 0
+            bear_count = 0
+            for sentence in tweet:
+                for word in sentence:
+                    if (word in bear_words):
+                        bear_count += 1
+                    elif (word in bull_words):
+                        bull_count += 1
+                    else:
+                        continue
+            
+            tweet_score = bull_count - bear_count
+            if(tweet_score < 0):
+                scores.append(['Bearish', tweet_score])
+            elif(tweet_score > 0):
+                scores.append(['Bullish', tweet_score])
+            else:
+                scores.append(['Stable', tweet_score])
+
+        return scores
 
 
     def analyze(self) -> list():
@@ -129,4 +162,12 @@ class SentimentAnalysis():
             analysis.append(sent)
 
         return analysis
+
+if __name__ == "__main__":
+    data = [['bitcoin is bearish. after the ath, the burn '], ['bitcoin is in a bear market']]
+
+    x = SentimentAnalysis(data)
+    #print(x.analyze())
+
+    print(SentimentAnalysis(data).Market_Forecast_Indicator())
 
