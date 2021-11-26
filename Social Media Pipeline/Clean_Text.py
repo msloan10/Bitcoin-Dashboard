@@ -38,14 +38,3 @@ def clean_tweet(text):
     pat = r'[^a-zA-z0-9.,!?/:;\"\'\s]' 
 
     return " ".join(re.sub(pat, '', cleaned).split())
-
-
-
-
-
-
-
-
-
-
-        
