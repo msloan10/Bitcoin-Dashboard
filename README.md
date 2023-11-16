@@ -1,14 +1,14 @@
-# Bitcoin Social Media Sentiment Analysis ETL
+# Social Media Bitcoin Sentiment Analysis Pipeline (ETL)
 
 ## Overview
 
 
-The impact social media is having on the world in undeniable. Millions of users login to engage in online discussions and communities everyday, and this results in an overwhelming amount of data that can be used in numerous ways. One way we can use this data is by conducting sentiment analysis over a specified topic. By doing this, we are able to detect the feelings an audience or market may have over a certain product, topic, event, etc. This can be extremely beneficial when investing in financial assets/ stocks. If we are able to detect how people feel about a certain asset, we can identify the state of the market (bear or bull) and have better decision making. 
+The impact social media is having on the world is undeniable. Everyday, millions of users login to engage in online discussions resulting in an overwhelming amount of unstructured, text data that can potentially be used to uncover valuable insights. One method of extracting meaning from this data is to conduct sentiment analysis in order to detect how an audience feels about a certain item or topic. This type of analysis can be extremely beneficial because if a company or entity is able to detect how people feel about a given topic / item, they will have a strategic advantage in the market that may allow them to take early action and make better informed decisions. With this concept in mind, I would like to introduce my project: The Bitcoin Sentiment Analysis Pipeline (ETL).
 
+The Bitcoin Sentiment Analysis Pipeline (ETL) in this repository automatically extracts tweets mentioning Bitcoin along with relative Twitter user data, transforms the text into a uniform format, loads the clean data into a MS SQL Server database, and analyzes the sentiment of over 800 tweets in 15 minute intervals. The analysis portion includes assigning each tweet a sentiment direction (positive, negative or neutral) and giving each tweet a Market Forecast Indicator score. This is a mathematical formula I developed to indicate what type of market the tweet is implying: Bearish, Bullish, or Stable (neither bear or bull). In addition, the pipeline also monitors mentions of other top cryptocurrencies to observe alternative cryptocurrency trends. 
 
-The Bitcoin Sentiment Analysis ETL in this repository extracts, transforms, analyzes, and loads data from Twitter into a MS SQL Server database. The analysis portion includes individual scores for positive, negative, and neutral polarity as well as overall sentiment. Other attributes include tweet id, user id, text, retweets, likes, result type, time, and mentions of other top cryptocurrencies. In addition to this, I constructed my own metric known as the Market Forecast Indicator (MFI). The MFI indicates whether a tweet is implying that the current market is Bearish, Bullish, or Stable (neither bear or bull).  
-
-Experiment results are displayed using Power BI. 
+Aggregated experiment results are displayed using a Power BI dashboard.
+ 
  
 
 ## File Descriptions
